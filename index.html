@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Threat-Aware IaC Scanner</title>
+    <!-- 1. Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 2. Load Lucide icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Simple spinner animation */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+    </style>
+    <script>
+        // Configuration for Tailwind dark mode
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans antialiased transition-colors duration-300">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-3xl">
+        
+        <!-- Header -->
+        <header class="mb-6 flex items-center justify-between">
+            <h1 class="text-3xl font-bold text-gray-800 dark:text-white">
+                🛡️ Threat-Aware IaC Scanner
+            </h1>
+            <button id="theme-toggle" class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700">
+                <i data-lucide="sun" class="dark:hidden"></i>
+                <i data-lucide="moon" class="hidden dark:block"></i>
+            </button>
+        </header>
+
+        <!-- Main Card -->
+        <main class="bg-white dark:bg-gray-800 shadow-2xl rounded-xl p-6 md:p-8">
+
+            <!-- Step 1: API URL -->
+            <div class="mb-4">
+                <label for="apiUrl" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    API Gateway URL
+                </label>
+                <input type="text" id="apiUrl" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="https://xxxxxxxxx.execute-api.us-east-1.amazonaws.com/prod">
+            </div>
+
+            <!-- Step 2: IaC Plan Input -->
+            <div class="mb-4">
+                <label for="planJson" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Paste your `plan.json` content here
+                </label>
+                <textarea id="planJson" rows="15" class="w-full p-3 font-mono text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="{...}"></textarea>
+            </div>
+
+            <!-- Step 3: Submit Button -->
+            <button id="submitButton" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center transition duration-200 disabled:opacity-50">
+                <i data-lucide="scan-line" class="w-5 h-5 mr-2"></i>
+                Start Scan
+            </button>
+
+            <!-- Step 4: Status Box -->
+            <div id="statusBox" class="mt-6 p-4 text-center bg-gray-100 dark:bg-gray-700 rounded-lg text-gray-600 dark:text-gray-300 hidden">
+                <!-- Status messages will appear here -->
+            </div>
+
+            <!-- Step 5: Results Container -->
+            <div id="resultsContainer" class="mt-8 border-t border-gray-200 dark:border-gray-700 pt-6">
+                <!-- Results will be injected here -->
+            </div>
+        </main>
+
+    </div>
+
+    <!-- 3. Main JavaScript Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Icon and Theme Setup ---
+            lucide.createIcons();
+            
+            const themeToggle = document.getElementById('theme-toggle');
+            themeToggle.addEventListener('click', () => {
+                document.documentElement.classList.toggle('dark');
+            });
+
+            // --- Element References ---
+            const submitButton = document.getElementById('submitButton');
+            const apiUrlInput = document.getElementById('apiUrl');
+            const planJsonInput = document.getElementById('planJson');
+            const statusBox = document.getElementById('statusBox');
+            const resultsContainer = document.getElementById('resultsContainer');
+
+            // --- Helper Functions ---
+
+            /** Renders a spinner icon */
+            function renderSpinner() {
+                return `<svg class="spinner w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>`;
+            }
+            
+            /** Sets the status message */
+            function setStatus(message, isLoading = false) {
+                statusBox.classList.remove('hidden');
+                let icon = '';
+                if (isLoading) {
+                    icon = renderSpinner();
+                }
+                statusBox.innerHTML = `<div class="flex items-center justify-center">${icon} ${message}</div>`;
+            }
+
+            /** Gets the correct color for a risk score */
+            function getRiskColor(score) {
+                const upperScore = score.toUpperCase();
+                if (upperScore === 'CRITICAL') return 'text-red-600 dark:text-red-400';
+                if (upperScore === 'HIGH') return 'text-orange-600 dark:text-orange-400';
+                if (upperScore === 'MEDIUM') return 'text-yellow-600 dark:text-yellow-400';
+                return 'text-green-600 dark:text-green-400';
+            }
+
+            /** Gets the correct icon for a risk score */
+            function getRiskIcon(score) {
+                const upperScore = score.toUpperCase();
+                if (upperScore === 'CRITICAL') return 'shield-alert';
+                if (upperScore === 'HIGH') return 'shield-half';
+                if (upperScore === 'MEDIUM') return 'shield-check';
+                return 'shield';
+            }
+            
+            /** Displays the final results */
+            function displayResults(data) {
+                // Clear previous results
+                resultsContainer.innerHTML = '';
+                
+                let results;
+                try {
+                    // results_json is a string *inside* the main JSON, so we parse it.
+                    results = JSON.parse(data.results_json);
+                } catch (e) {
+                    setStatus(`Error: Could not parse results_json. ${e.message}`);
+                    return;
+                }
+
+                if (results.length === 0) {
+                    resultsContainer.innerHTML = `
+                        <div class="text-center p-4 bg-green-100 dark:bg-green-900 border border-green-300 dark:border-green-700 rounded-lg">
+                            <h3 class="font-bold text-lg text-green-800 dark:text-green-200">Scan Complete: No Findings</h3>
+                            <p class="text-green-700 dark:text-green-300">No threats or misconfigurations were found.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Build HTML for each result card
+                results.forEach(res => {
+                    const riskColor = getRiskColor(res.risk_score);
+                    const riskIcon = getRiskIcon(res.risk_score);
+                    
+                    let findingsHtml = '';
+                    if (res.findings && res.findings.length > 0) {
+                        findingsHtml = res.findings.map(f => `
+                            <li class="mt-2 text-sm">
+                                <strong class="text-gray-700 dark:text-gray-200">[${f.feed}]</strong>
+                                <span class="text-gray-600 dark:text-gray-400">${f.details}</span>
+                                <div class="pl-4 mt-1">
+                                    <span class="text-xs font-mono p-1 bg-gray-100 dark:bg-gray-700 rounded">${f.evidence}</span>
+                                </div>
+                            </li>
+                        `).join('');
+                    } else {
+                        findingsHtml = '<li class="mt-2 text-sm text-gray-500 dark:text-gray-400">No specific threat intelligence findings.</li>';
+                    }
+
+                    const card = `
+                        <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg mb-4 overflow-hidden border border-gray-200 dark:border-gray-700">
+                            <div class="p-5">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-mono text-sm text-blue-600 dark:text-blue-400">${res.resource_id}</span>
+                                    <span class="py-1 px-3 rounded-full font-bold text-sm ${riskColor} bg-gray-100 dark:bg-gray-700 flex items-center">
+                                        <i data-lucide="${riskIcon}" class="w-4 h-4 mr-1.5"></i>
+                                        ${res.risk_score.toUpperCase()}
+                                    </span>
+                                </div>
+                                <h4 class="text-lg font-semibold mt-2 text-gray-800 dark:text-gray-100">${res.resource_type}</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">${res.details}</p>
+                                
+                                <div class="mt-4 border-t border-gray-200 dark:border-gray-600 pt-3">
+                                    <h5 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Correlated Findings</h5>
+                                    <ul class="mt-2 list-disc list-inside space-y-1">
+                                        ${findingsHtml}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    resultsContainer.innerHTML += card;
+                });
+                
+                // Re-render any new icons
+                lucide.createIcons();
+            }
+
+            // --- Polling Logic ---
+            async function pollForResults(scanId, baseUrl) {
+                const pollUrl = `${baseUrl}/scans/${scanId}`;
+                const pollInterval = 3000; // 3 seconds
+                const maxAttempts = 40; // 40 attempts * 3s = 120s (2 min) timeout
+                
+                for (let i = 0; i < maxAttempts; i++) {
+                    try {
+                        const response = await fetch(pollUrl);
+                        if (!response.ok) {
+                            throw new Error(`Polling failed with status: ${response.status}`);
+                        }
+                        
+                        const data = await response.json();
+
+                        if (data.status === 'COMPLETED') {
+                            setStatus('Scan Complete!', false);
+                            displayResults(data);
+                            return;
+                        } else if (data.status === 'FAILED') {
+                            throw new Error(`Scan failed on server: ${data.error_message || 'Unknown error'}`);
+                        } else {
+                            // Still PENDING or WORKING
+                            setStatus(`Status: ${data.status}...`, true);
+                        }
+
+                    } catch (err) {
+                        setStatus(`Polling error: ${err.message}`, false);
+                        return; // Stop polling on error
+                    }
+                    
+                    // Wait for the next poll
+                    await new Promise(resolve => setTimeout(resolve, pollInterval));
+                }
+
+                // If loop finishes, it timed out
+                setStatus('Scan timed out. Please try again or check the logs.', false);
+            }
+
+            // --- Main Submit Logic ---
+            submitButton.addEventListener('click', async () => {
+                const apiUrl = apiUrlInput.value.replace(/\/$/, ''); // Clean trailing slash
+                const planJson = planJsonInput.value;
+                
+                // 1. Validation
+                if (!apiUrl) {
+                    setStatus('Please enter the API Gateway URL.', false);
+                    return;
+                }
+
+                let planObject;
+                try {
+                    planObject = JSON.parse(planJson);
+                } catch (e) {
+                    setStatus('Error: Invalid JSON in the IaC plan text area.', false);
+                    return;
+                }
+
+                // 2. Set loading state
+                submitButton.disabled = true;
+                submitButton.innerHTML = `${renderSpinner()} Starting Scan...`;
+                resultsContainer.innerHTML = '';
+                setStatus('Submitting scan...', true);
+                
+                const submitUrl = `${apiUrl}/scans`;
+
+                // 3. Submit Scan (POST /scans)
+                try {
+                    const response = await fetch(submitUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(planObject)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Submission failed: ${response.status} ${response.statusText}`);
+                    }
+                    
+                    const data = await response.json();
+                    const scanId = data.scan_id;
+
+                    if (!scanId) {
+                        throw new Error('Invalid response: `scan_id` not found.');
+                    }
+                    
+                    // 4. Start Polling (GET /scans/{id})
+                    setStatus(`Scan submitted (ID: ${scanId}). Polling for results...`, true);
+                    await pollForResults(scanId, apiUrl);
+
+                } catch (err) {
+                    setStatus(`Error: ${err.message}`, false);
+                } finally {
+                    // 5. Reset button
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = '<i data-lucide="scan-line" class="w-5 h-5 mr-2"></i> Start Scan';
+                    lucide.createIcons(); // Re-render button icon
+                }
+            });
+
+            // Set placeholder JSON
+            planJsonInput.value = JSON.stringify({
+                "resource_changes": [
+                    {
+                        "address": "aws_instance.compromised_vm",
+                        "type": "aws_instance",
+                        "change": {
+                            "after": {
+                                "public_ip": "45.79.212.79",
+                                "associate_public_ip_address": true
+                            }
+                        }
+                    }
+                ]
+            }, null, 4);
+
+        });
+    </script>
+</body>
+</html>

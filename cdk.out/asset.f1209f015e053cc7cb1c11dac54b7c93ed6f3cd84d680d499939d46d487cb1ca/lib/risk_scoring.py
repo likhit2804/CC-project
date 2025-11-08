@@ -15,12 +15,8 @@ def calculate_risk(correlated_findings):
 
     total_score = 0
     for finding in correlated_findings:
-        # ---
-        # THE FIX IS HERE:
-        # Prioritize the 'risk_level' (from correlation) first.
-        # Fall back to 'risk' (from the raw adapter) if it doesn't exist.
-        # ---
-        lvl = finding.get('risk_level') or finding.get('risk', 'LOW')
+        # Support both 'risk' and 'risk_level'
+        lvl = finding.get('risk') or finding.get('risk_level', 'LOW')
         lvl = lvl.upper()
         total_score += SEVERITY_WEIGHTS.get(lvl, 0)
 
