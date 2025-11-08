@@ -1,0 +1,14 @@
+{
+  "resource_changes": [
+    {
+      "address": "aws_instance.compromised_vm",
+      "type": "aws_instance",
+      "change": {
+        "after": {
+          "public_ip": "45.79.212.79",
+          "associate_public_ip_address": true
+        }
+      }
+    }
+  ]
+}

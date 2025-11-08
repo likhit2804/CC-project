@@ -1,0 +1,8 @@
+{
+  "ExpressionAttributeNames": {
+    "#d": "data"
+  },
+  "ExpressionAttributeValues": {
+    ":ip": { "S": "45.79.212.79" }
+  }
+}

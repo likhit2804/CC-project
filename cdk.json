@@ -1,0 +1,7 @@
+{
+  "app": "python infrastructure/app.py",
+  "context": {
+    "aws_account": "106731597972",
+    "aws_region": "us-east-1"
+  }
+}

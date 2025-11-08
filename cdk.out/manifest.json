@@ -1,0 +1,250 @@
+{
+  "version": "32.0.0",
+  "artifacts": {
+    "ta-iac-stack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "ta-iac-stack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "ta-iac-stack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "ta-iac-stack.template.json",
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/971dc380da0b4d6c6a907a8bfdc5defb1e1fa9afef3a1f03d08b99f1be39ccfd.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "ta-iac-stack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "ta-iac-stack.assets"
+      ],
+      "metadata": {
+        "/ta-iac-stack/IaCPlansBucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "IaCPlansBucket5ADBB4F5"
+          }
+        ],
+        "/ta-iac-stack/ScansTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ScansTableF3C3406E"
+          }
+        ],
+        "/ta-iac-stack/FeedCache/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FeedCache6681CF3E"
+          }
+        ],
+        "/ta-iac-stack/DeadLetterQueue/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeadLetterQueue9F481546"
+          }
+        ],
+        "/ta-iac-stack/ScanQueue/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ScanQueueEE21BF32"
+          }
+        ],
+        "/ta-iac-stack/TAIaCLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TAIaCLayer911E8E87"
+          }
+        ],
+        "/ta-iac-stack/SubmitterFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubmitterFunctionServiceRole94C84E07"
+          }
+        ],
+        "/ta-iac-stack/SubmitterFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubmitterFunctionServiceRoleDefaultPolicy6690F312"
+          }
+        ],
+        "/ta-iac-stack/SubmitterFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubmitterFunction351D5003"
+          }
+        ],
+        "/ta-iac-stack/WorkerFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WorkerFunctionServiceRole38D8F738"
+          }
+        ],
+        "/ta-iac-stack/WorkerFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WorkerFunctionServiceRoleDefaultPolicy07D8276A"
+          }
+        ],
+        "/ta-iac-stack/WorkerFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WorkerFunctionACE6A4B0"
+          }
+        ],
+        "/ta-iac-stack/WorkerFunction/SqsEventSource:taiacstackScanQueue6BEF1F8A/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WorkerFunctionSqsEventSourcetaiacstackScanQueue6BEF1F8A1A54739D"
+          }
+        ],
+        "/ta-iac-stack/TAIaCApi/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TAIaCApi46A38385"
+          }
+        ],
+        "/ta-iac-stack/TAIaCApi/CloudWatchRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TAIaCApiCloudWatchRole66EC0EE3"
+          }
+        ],
+        "/ta-iac-stack/TAIaCApi/Account": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TAIaCApiAccountF5205A4F"
+          }
+        ],
+        "/ta-iac-stack/TAIaCApi/Deployment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TAIaCApiDeployment9E20D5227b7d658457efe8c8ec2d77b14a24b369"
+          }
+        ],
+        "/ta-iac-stack/TAIaCApi/DeploymentStage.prod/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TAIaCApiDeploymentStageprod6DC90056"
+          }
+        ],
+        "/ta-iac-stack/TAIaCApi/Endpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TAIaCApiEndpointC3A5D4C8"
+          }
+        ],
+        "/ta-iac-stack/TAIaCApi/Default/scans/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TAIaCApiscans25EE1176"
+          }
+        ],
+        "/ta-iac-stack/TAIaCApi/Default/scans/POST/ApiPermission.taiacstackTAIaCApiE622FD7F.POST..scans": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TAIaCApiscansPOSTApiPermissiontaiacstackTAIaCApiE622FD7FPOSTscans9BCAEC09"
+          }
+        ],
+        "/ta-iac-stack/TAIaCApi/Default/scans/POST/ApiPermission.Test.taiacstackTAIaCApiE622FD7F.POST..scans": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TAIaCApiscansPOSTApiPermissionTesttaiacstackTAIaCApiE622FD7FPOSTscansCD3173B3"
+          }
+        ],
+        "/ta-iac-stack/TAIaCApi/Default/scans/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TAIaCApiscansPOSTCEE76460"
+          }
+        ],
+        "/ta-iac-stack/TAIaCApi/Default/scans/{scan_id}/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TAIaCApiscansscanidEA0F867B"
+          }
+        ],
+        "/ta-iac-stack/TAIaCApi/Default/scans/{scan_id}/GET/ApiPermission.taiacstackTAIaCApiE622FD7F.GET..scans.{scan_id}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TAIaCApiscansscanidGETApiPermissiontaiacstackTAIaCApiE622FD7FGETscansscanidEC4753A4"
+          }
+        ],
+        "/ta-iac-stack/TAIaCApi/Default/scans/{scan_id}/GET/ApiPermission.Test.taiacstackTAIaCApiE622FD7F.GET..scans.{scan_id}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TAIaCApiscansscanidGETApiPermissionTesttaiacstackTAIaCApiE622FD7FGETscansscanid393C2FF9"
+          }
+        ],
+        "/ta-iac-stack/TAIaCApi/Default/scans/{scan_id}/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TAIaCApiscansscanidGET20A995AE"
+          }
+        ],
+        "/ta-iac-stack/SubmitterLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SubmitterLogGroup12FF1F60"
+          }
+        ],
+        "/ta-iac-stack/WorkerLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WorkerLogGroup31FDBE4A"
+          }
+        ],
+        "/ta-iac-stack/ApiUrl": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiUrl"
+          }
+        ],
+        "/ta-iac-stack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/ta-iac-stack/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/ta-iac-stack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/ta-iac-stack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "ta-iac-stack"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}

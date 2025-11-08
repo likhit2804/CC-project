@@ -1,0 +1,16 @@
+service: ta-iac
+provider:
+  name: aws
+  runtime: python3.11
+  region: us-east-1
+functions:
+  submitter:
+    handler: lambdas/submitter_lambda.handler
+    environment:
+      TABLE_NAME: ${env:TABLE_NAME}
+      QUEUE_URL: ${env:QUEUE_URL}
+      S3_BUCKET: ${env:S3_BUCKET}
+  worker:
+    handler: lambdas/worker_lambda.handler
+    events:
+      - sqs: ${env:QUEUE_URL}
