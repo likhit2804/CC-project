@@ -17,7 +17,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/6a138ddd649fb67726a548686e095a68ed21f782c85d1f397994e37d8cdb9ef4.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/d10176e12af54cc1391b99ee99b79c8099b6563ace1d9c3201f81d68e17ad106.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -132,7 +132,7 @@
         "/ta-iac-stack/TAIaCApi/Deployment/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "TAIaCApiDeployment9E20D5227b7d658457efe8c8ec2d77b14a24b369"
+            "data": "TAIaCApiDeployment9E20D522f5569aca1bf7e0058772b47b5351dfd6"
           }
         ],
         "/ta-iac-stack/TAIaCApi/DeploymentStage.prod/Resource": [
@@ -147,10 +147,22 @@
             "data": "TAIaCApiEndpointC3A5D4C8"
           }
         ],
+        "/ta-iac-stack/TAIaCApi/Default/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TAIaCApiOPTIONSF962888B"
+          }
+        ],
         "/ta-iac-stack/TAIaCApi/Default/scans/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "TAIaCApiscans25EE1176"
+          }
+        ],
+        "/ta-iac-stack/TAIaCApi/Default/scans/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TAIaCApiscansOPTIONSB4ED05F1"
           }
         ],
         "/ta-iac-stack/TAIaCApi/Default/scans/POST/ApiPermission.taiacstackTAIaCApiE622FD7F.POST..scans": [
@@ -175,6 +187,12 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "TAIaCApiscansscanidEA0F867B"
+          }
+        ],
+        "/ta-iac-stack/TAIaCApi/Default/scans/{scan_id}/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TAIaCApiscansscanidOPTIONS5221BDDC"
           }
         ],
         "/ta-iac-stack/TAIaCApi/Default/scans/{scan_id}/GET/ApiPermission.taiacstackTAIaCApiE622FD7F.GET..scans.{scan_id}": [

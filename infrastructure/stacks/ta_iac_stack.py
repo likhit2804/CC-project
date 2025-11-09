@@ -118,10 +118,20 @@ class TAIaCStack(Stack):
         worker.add_event_source(event_sources.SqsEventSource(queue))
 
         # ========== API GATEWAY ==========
+        # In infrastructure/stacks/ta_iac_stack.py
+
         api = apigw.RestApi(
             self, "TAIaCApi",
             rest_api_name="TA-IaC API",
-            deploy_options=apigw.StageOptions(stage_name="prod")
+            deploy_options=apigw.StageOptions(stage_name="prod"),
+            
+            # --- ADD THIS BLOCK TO FIX CORS ---
+            default_cors_preflight_options=apigw.CorsOptions(
+                allow_origins=["http://127.0.0.1:5500"],
+                allow_methods=["GET", "POST", "OPTIONS"],
+                allow_headers=["Content-Type"]
+            )
+            # --- END OF BLOCK ---
         )
 
         scans = api.root.add_resource("scans")

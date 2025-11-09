@@ -253,7 +253,7 @@
      "S3Bucket": {
       "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
      },
-     "S3Key": "1c8f006e97d7e8d9720c38fb79087db1cab8f99a0338c2662bc088ef510d5a3c.zip"
+     "S3Key": "f1b97a790fb4dbb8bdd50531c7ae4aa679ec993b46536ce695bd8e6347ac97e5.zip"
     },
     "Role": {
      "Fn::GetAtt": [
@@ -289,7 +289,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "ta-iac-stack/SubmitterFunction/Resource",
-    "aws:asset:path": "asset.1c8f006e97d7e8d9720c38fb79087db1cab8f99a0338c2662bc088ef510d5a3c",
+    "aws:asset:path": "asset.f1b97a790fb4dbb8bdd50531c7ae4aa679ec993b46536ce695bd8e6347ac97e5",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -456,7 +456,7 @@
      "S3Bucket": {
       "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
      },
-     "S3Key": "1c8f006e97d7e8d9720c38fb79087db1cab8f99a0338c2662bc088ef510d5a3c.zip"
+     "S3Key": "f1b97a790fb4dbb8bdd50531c7ae4aa679ec993b46536ce695bd8e6347ac97e5.zip"
     },
     "Role": {
      "Fn::GetAtt": [
@@ -496,7 +496,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "ta-iac-stack/WorkerFunction/Resource",
-    "aws:asset:path": "asset.1c8f006e97d7e8d9720c38fb79087db1cab8f99a0338c2662bc088ef510d5a3c",
+    "aws:asset:path": "asset.f1b97a790fb4dbb8bdd50531c7ae4aa679ec993b46536ce695bd8e6347ac97e5",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -582,7 +582,7 @@
     "aws:cdk:path": "ta-iac-stack/TAIaCApi/Account"
    }
   },
-  "TAIaCApiDeployment9E20D5227b7d658457efe8c8ec2d77b14a24b369": {
+  "TAIaCApiDeployment9E20D522f5569aca1bf7e0058772b47b5351dfd6": {
    "Type": "AWS::ApiGateway::Deployment",
    "Properties": {
     "RestApiId": {
@@ -591,8 +591,11 @@
     "Description": "Automatically created by the RestApi construct"
    },
    "DependsOn": [
+    "TAIaCApiOPTIONSF962888B",
     "TAIaCApiscansscanidGET20A995AE",
+    "TAIaCApiscansscanidOPTIONS5221BDDC",
     "TAIaCApiscansscanidEA0F867B",
+    "TAIaCApiscansOPTIONSB4ED05F1",
     "TAIaCApiscansPOSTCEE76460",
     "TAIaCApiscans25EE1176"
    ],
@@ -607,7 +610,7 @@
      "Ref": "TAIaCApi46A38385"
     },
     "DeploymentId": {
-     "Ref": "TAIaCApiDeployment9E20D5227b7d658457efe8c8ec2d77b14a24b369"
+     "Ref": "TAIaCApiDeployment9E20D522f5569aca1bf7e0058772b47b5351dfd6"
     },
     "StageName": "prod"
    },
@@ -616,6 +619,53 @@
    ],
    "Metadata": {
     "aws:cdk:path": "ta-iac-stack/TAIaCApi/DeploymentStage.prod/Resource"
+   }
+  },
+  "TAIaCApiOPTIONSF962888B": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "HttpMethod": "OPTIONS",
+    "ResourceId": {
+     "Fn::GetAtt": [
+      "TAIaCApi46A38385",
+      "RootResourceId"
+     ]
+    },
+    "RestApiId": {
+     "Ref": "TAIaCApi46A38385"
+    },
+    "AuthorizationType": "NONE",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type'",
+        "method.response.header.Access-Control-Allow-Origin": "'http://127.0.0.1:5500'",
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "ta-iac-stack/TAIaCApi/Default/OPTIONS/Resource"
    }
   },
   "TAIaCApiscans25EE1176": {
@@ -634,6 +684,50 @@
    },
    "Metadata": {
     "aws:cdk:path": "ta-iac-stack/TAIaCApi/Default/scans/Resource"
+   }
+  },
+  "TAIaCApiscansOPTIONSB4ED05F1": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "HttpMethod": "OPTIONS",
+    "ResourceId": {
+     "Ref": "TAIaCApiscans25EE1176"
+    },
+    "RestApiId": {
+     "Ref": "TAIaCApi46A38385"
+    },
+    "AuthorizationType": "NONE",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type'",
+        "method.response.header.Access-Control-Allow-Origin": "'http://127.0.0.1:5500'",
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "ta-iac-stack/TAIaCApi/Default/scans/OPTIONS/Resource"
    }
   },
   "TAIaCApiscansPOSTApiPermissiontaiacstackTAIaCApiE622FD7FPOSTscans9BCAEC09": {
@@ -776,6 +870,50 @@
    },
    "Metadata": {
     "aws:cdk:path": "ta-iac-stack/TAIaCApi/Default/scans/{scan_id}/Resource"
+   }
+  },
+  "TAIaCApiscansscanidOPTIONS5221BDDC": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "HttpMethod": "OPTIONS",
+    "ResourceId": {
+     "Ref": "TAIaCApiscansscanidEA0F867B"
+    },
+    "RestApiId": {
+     "Ref": "TAIaCApi46A38385"
+    },
+    "AuthorizationType": "NONE",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type'",
+        "method.response.header.Access-Control-Allow-Origin": "'http://127.0.0.1:5500'",
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "ta-iac-stack/TAIaCApi/Default/scans/{scan_id}/OPTIONS/Resource"
    }
   },
   "TAIaCApiscansscanidGETApiPermissiontaiacstackTAIaCApiE622FD7FGETscansscanidEC4753A4": {
@@ -952,7 +1090,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/22QTW/CMAyGfwv3kA3QpF2BfVxAY2XaFbmpKRlt0tXOqirKf5+SVjCknd7HdvL6Yy4fZ/J+Ah1NVXGeVjqXfs+gzgI6OnhaSL9y6ows1kcz0iArIAyi6A3Utsil/4C8wvgqQRD0TdK/O3QpmSCICuq8AOk30GP7iS1pa2L5Jn5xRvFYuPDzDxreW9cq3ELTaFPG8v/ZHba1pugVBC0OQIRMchlFaKilz+wwatKdrbTq079EQUCjS2DsoJc+Q+Jlo9PrKy6Vss6weMKmsn2NJt3nT7RnKFOLATKkNGQ82iUYPQfeIp9sEVMDBVHZkqTf2PK1ta5JVxo5hKtH2io2GXd/c9w4vrFeH83amkJzOsiu55M1dws5m8uHyRdpPW2dYV2jzAb9BUK3ULoUAgAA"
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/22QTU/DMAyGfwv3LLBNSFy38XHZxOgQ18lNTRfWJqF2mKoo/x0lLWxInPzYr79n8m4qb67gRBNVHSeNLmXYMaijgBPtA81lWHp1RBardzPSYJZAGEXVG2htVcrwCmWDKStDFPRJMrx49DmYIYoG2rICGdbQY/eGHWlrkvzHf/RG8Sj88sMXGt5Z3yncgHPa1En+P7rFrtWUekVB8z0QIZNcJCM0tDIUdlg1261ttOpzXaYowOkaGE/Qy1Ag8cLpnH3GhVLWGxb36Brbt2jyfy68HUOdRwxQIOUl09PEBvlgqySO9KOOQzJH0diaZFjb+qmz3uUvjRzjuSRflYaMtz97dp4vOyVeWVNpzg/Z9nyw5noupzN5e/VBWk86b1i3KIvBfgOoltvyFAIAAA=="
    },
    "Metadata": {
     "aws:cdk:path": "ta-iac-stack/CDKMetadata/Default"
